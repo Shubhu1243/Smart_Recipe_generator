@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Generator - AI Powered Cooking</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-utensils"></i> Smart Recipe Generator</h1>
+                <p>Create amazing recipes from your ingredients</p>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="form-container">
+                <form id="recipeForm" class="recipe-form">
+                    <div class="form-grid">
+                        <!-- Ingredients Section -->
+                        <div class="form-group span-2">
+                            <label for="ingredients">
+                                <i class="fas fa-carrot"></i> Ingredients
+                            </label>
+                            <div class="ingredients-input">
+                                <input type="text" id="ingredientInput" placeholder="Add an ingredient...">
+                                <button type="button" id="addIngredient" class="add-btn">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                            <div id="ingredientsList" class="ingredients-list"></div>
+                            <small>Press Enter or click + to add ingredients</small>
+                        </div>
+
+                        <!-- Cooking Time -->
+                        <div class="form-group">
+                            <label for="cookingTime">
+                                <i class="fas fa-clock"></i> Cooking Time (minutes)
+                            </label>
+                            <input type="number" id="cookingTime" min="5" max="480" value="30" required>
+                        </div>
+
+                        <!-- Servings -->
+                        <div class="form-group">
+                            <label for="servings">
+                                <i class="fas fa-users"></i> Servings
+                            </label>
+                            <input type="number" id="servings" min="1" max="20" value="4" required>
+                        </div>
+
+                        <!-- Difficulty -->
+                        <div class="form-group">
+                            <label for="difficulty">
+                                <i class="fas fa-chart-bar"></i> Difficulty
+                            </label>
+                            <select id="difficulty" required>
+                                <option value="Easy">Easy</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="Hard">Hard</option>
+                            </select>
+                        </div>
+
+                        <!-- Cuisine -->
+                        <div class="form-group">
+                            <label for="cuisine">
+                                <i class="fas fa-globe"></i> Cuisine Type
+                            </label>
+                            <select id="cuisine">
+                                <option value="">Any Cuisine</option>
+                            </select>
+                        </div>
+
+                        <!-- Meal Type -->
+                        <div class="form-group">
+                            <label for="mealType">
+                                <i class="fas fa-utensils"></i> Meal Type
+                            </label>
+                            <select id="mealType">
+                                <option value="">Any Meal</option>
+                            </select>
+                        </div>
+
+                        <!-- Dietary Restrictions -->
+                        <div class="form-group">
+                            <label for="dietaryRestrictions">
+                                <i class="fas fa-leaf"></i> Dietary Restrictions
+                            </label>
+                            <select id="dietaryRestrictions">
+                                <option value="">None</option>
+                            </select>
+                        </div>
+
+                        <!-- Equipment -->
+                        <div class="form-group span-2">
+                            <label for="equipment">
+                                <i class="fas fa-tools"></i> Available Equipment
+                            </label>
+                            <div class="equipment-grid" id="equipmentGrid"></div>
+                            <small>Select the equipment you have available</small>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="generate-btn" id="generateBtn">
+                        <i class="fas fa-magic"></i>
+                        <span>Generate Recipe</span>
+                        <div class="loading-spinner"></div>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Recipe Display -->
+            <div id="recipeResult" class="recipe-result hidden">
+                <div class="recipe-header">
+                    <h2 id="recipeTitle"></h2>
+                    <p id="recipeDescription"></p>
+                    <div class="recipe-meta">
+                        <span class="meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="recipeTotalTime"></span>
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-users"></i>
+                            <span id="recipeServings"></span>
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-chart-bar"></i>
+                            <span id="recipeDifficulty"></span>
+                        </span>
+                        <span class="meta-item">
+                            <i class="fas fa-globe"></i>
+                            <span id="recipeCuisine"></span>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="recipe-content">
+                    <div class="recipe-section">
+                        <h3><i class="fas fa-list"></i> Ingredients</h3>
+                        <ul id="recipeIngredients" class="ingredients-display"></ul>
+                    </div>
+
+                    <div class="recipe-section">
+                        <h3><i class="fas fa-tools"></i> Equipment Needed</h3>
+                        <div id="recipeEquipment" class="equipment-display"></div>
+                    </div>
+
+                    <div class="recipe-section">
+                        <h3><i class="fas fa-list-ol"></i> Instructions</h3>
+                        <ol id="recipeInstructions" class="instructions-list"></ol>
+                    </div>
+
+                    <div class="recipe-extras">
+                        <div class="recipe-section">
+                            <h3><i class="fas fa-lightbulb"></i> Tips</h3>
+                            <ul id="recipeTips" class="tips-list"></ul>
+                        </div>
+
+                        <div class="recipe-section">
+                            <h3><i class="fas fa-chart-pie"></i> Nutrition (per serving)</h3>
+                            <div id="recipeNutrition" class="nutrition-info"></div>
+                        </div>
+
+                        <div class="recipe-section">
+                            <h3><i class="fas fa-box"></i> Storage</h3>
+                            <p id="recipeStorage"></p>
+                        </div>
+
+                        <div class="recipe-section">
+                            <h3><i class="fas fa-exchange-alt"></i> Variations</h3>
+                            <ul id="recipeVariations" class="variations-list"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-actions">
+                    <button class="action-btn print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> Print Recipe
+                    </button>
+                    <button class="action-btn new-recipe-btn" onclick="resetForm()">
+                        <i class="fas fa-plus"></i> New Recipe
+                    </button>
+                </div>
+            </div>
+
+            <!-- Error Display -->
+            <div id="errorMessage" class="error-message hidden">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span id="errorText"></span>
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
